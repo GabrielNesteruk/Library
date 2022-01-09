@@ -1,0 +1,84 @@
+.booksform-label,
+.booksform-header {
+  color: gray;
+}
+
+.booksform-header {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 1rem;
+}
+
+.booksform-label {
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+
+.booksform-input {
+  width: 80%;
+  margin: auto;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.booksform-container {
+  color: white;
+  background-color: white;
+
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-align: center;
+
+  border-radius: 15px;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
+
+  padding: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  margin: auto;
+  width: fit-content;
+}
+
+.booksform-text,
+.booksform-date,
+.booksform-number {
+  padding: 3px 10px;
+  box-shadow: inset 1px 1px 3px #ccc;
+}
+
+.booksform-text:focus,
+.booksform-date:focus,
+.booksform-number:focus {
+  border: 1px solid #555;
+}
+
+/* .booksform-text {
+
+}
+
+.booksform-date {
+
+}
+
+.booksform-number {
+
+} */
+
+.booksform-button {
+  background-color: #555555;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.author-form,
+.category-form {
+  justify-content: center;
+  margin-top: 60px;
+}

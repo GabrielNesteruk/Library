@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600&display=swap');
+
+.bookslist-container{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.bookslist-header{
+    background-image: url("../Images/books_background.jpg");
+    width: 100%;
+    height: 250px;
+    background-size: cover;
+    background-position: top;
+    position: relative;
+}
+
+.bookslist-header::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #1c2327;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+}
+
+.bookslist-container .searchbox-container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+}
+.bookslist-container .searchbox-container .search-panel{
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.bookslist-container .searchbox-container .header-text {
+    color: white;
+    font-size: 27px;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+.bookslist-container .select-category{
+    position: relative;
+    padding: 10px;
+}
+
+.booktable-container{
+    align-items: center;
+    text-align: center;
+    margin: 100px auto;
+
+    width: 70%;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+}
+.booktable-container .text-header{
+    margin-bottom: 50px;
+    color: rgb(41, 41, 41);
+    letter-spacing: 2px;
+
+}
+
+.books {
+    margin: auto;
+}
+
+.books td, .books  th {
+    border: 1px solid #ddd;
+    padding: 15px;
+  }
+
+/*.books tr:hover {background-color: #ddd;}*/
+.books .td-loan-btn{
+    border: 0px;
+    padding: 0;
+    position: relative;
+    margin-left: 30px;
+    align-items: center;
+}
+.books .loan-btn{
+    background-color: transparent; /* Green */
+    border: 1px solid rgb(238, 237, 237);
+
+    color: rgb(32, 32, 32);
+    padding: 5px 10px;
+    margin: auto;
+    text-align: center;
+    text-decoration: none;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    display: flex;
+
+}
+.books .loan-btn:hover{
+    background: #57923b;
+    color: rgb(243, 243, 243);
+}
+
+.books th {
+    padding: 12px 10px;
+    text-align: center;
+    background-color: #434447;
+    color: white;
+  }
+

@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600&display=swap');
+
+.adminpanel-container{
+    font-family: 'Montserrat', sans-serif;
+    
+}
+.adminpanel-container h1{
+    font-weight: 300;
+}
+.adminpanel-container .header{
+    width: 100%;
+    height: 130px;
+    background-color: #15171b;
+    position: relative;
+    margin-bottom: 50px;
+    
+}
+
+.adminpanel-container .header h1{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(241, 241, 241);
+    font-weight: 400;
+    font-size: 22px;
+    text-align: center;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+
+.adminpanel-container .user-management-panels{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 150px;
+
+}
+
+.adminpanel-container .add-user-panel{
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    margin: auto;
+    background-color: white;
+    z-index: 4;
+    padding: 30px 50px;
+    box-shadow: 0px 0px 10px 3px rgb(241, 241, 241);
+    display: none;
+    flex-direction: column;
+
+}
+.adminpanel-container .add-user-panel .add-user-headertext{
+    margin-bottom: 30px;
+    color:#1e1f20;
+}
+.adminpanel-container .add-user-panel .inputs{
+    display: flex;
+    flex-direction: column;
+
+}
+.adminpanel-container .add-user-panel .element{
+    margin: 5px auto;
+    display: flex;
+    text-align: left;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+}
+.adminpanel-container .add-user-panel .element h1{
+    font-size: 13px;
+    font-weight: 300;
+    margin-bottom: 10px;
+
+}
+.adminpanel-container .add-user-panel .element input{
+    padding: 10px 12px;
+    border: 1px solid rgb(240, 240, 240);
+    font-size: 12px;
+    width: 100%;
+}
+.adminpanel-container .add-user-panel .add-user-btn{
+    position: relative;
+    padding: 12px 15px;
+    background-color: rgb(27, 27, 27);
+    margin: auto;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: 0.4s ease;
+}
+.adminpanel-container .add-user-panel .add-user-btn:hover{
+    background-color: rgb(75, 75, 75);
+
+}
+.adminpanel-container .add-user-panel .add-user-btn h1{
+    color: white;
+    font-size: 17px;
+    font-weight: 200;
+
+}
+.user-management-panels .add-user, .display-users{
+    padding: 20px;
+    margin: 0 30px;
+    height: 170px;
+    width: 170px;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px 5px rgba(243, 243, 243, 0.651);
+    border-radius: 10px;
+}
+
+.fa-user-plus, .fa-users{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 90px;
+    transition: 0.4s ease-out;
+    color:#191c24;
+}
+
+
+.user-management-panels .add-user:hover .fa-user-plus, .display-users:hover .fa-users{
+    font-size: 100px;
+    color: rgb(155, 155, 155);
+    
+}
+.adminpanel-container .middle{
+    text-align: center;
+    margin-bottom: 50px;
+}
+.adminpanel-container .users-table{
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+
+
+
+}
+
+.users-table thead{
+    background-color: #292b31;
+    color: white;
+}
+
+.users-table td, .users-table  th {
+    padding: 15px;
+    font-weight: 400;
+  }
+  .users-table tbody tr{
+      background-color: rgba(247, 247, 247, 0.568);
+
+  }
+  .users-table tbody::before{
+    content: '';
+    display: block;
+    height: 15px;
+  }
+
+  .fa-user-edit, .fa-user-times{
+      font-size: 22px; 
+      color: #292b31;
+      cursor: pointer;
+      margin: 0px 7px;
+      transition: 0.3s ease;
+  }
+
+  .fa-user-edit:hover{
+    color: rgb(105, 155, 247);
+  }
+  .fa-user-times:hover{
+    color: rgb(206, 58, 58);
+  }
+
+  .tools {
+      display: flex;
+      flex-direction: row;
+  }
+
+.adminpanel-container .bottom{
+    height: 50px;
+    width: 100%;
+    background-color: #15171b;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+
+}
