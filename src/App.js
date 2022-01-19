@@ -20,7 +20,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 function App() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [isLogged, setIsLogged] = useState();
+  const [isLogged, setIsLogged] = useState(false);
   const [booksList, setBooksList] = useState(null);
   const [searchBooksByString, setSearchTypeToString] = useState(true);
 
@@ -110,13 +110,17 @@ function App() {
           <Registration />
         </Route>
         <Route exact path="/pracownikpanel">
-          <EmployeePanel />
+          <EmployeePanel setIsLogged={setIsLogged} />
         </Route>
         <Route exact path="/adminpanel">
-          <AdminPanel />
+          {isLogged ? (
+            <AdminPanel createNotification={createNotification} />
+          ) : (
+            <h1>Niezalogowany</h1>
+          )}
         </Route>
         <Route exact path="/konto">
-          {isLogged ? <Account /> : <h1>Niezalogowany</h1>}
+          <Account setIsLogged={setIsLogged} />
         </Route>
       </Router>
     </div>

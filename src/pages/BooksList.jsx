@@ -1,21 +1,33 @@
-
-
 import { useEffect, useState } from "react";
 import BookTable from "../components/BooksTable";
-
+import "../Styles/AdvancedSearch.css"
 
 const BooksList = ({title, categoryFilter, booksList, setBooksList, createNotification, searchByString}) => {
 
-    const [category, setCategory] = useState('');
+    const [categoryList, setCategoryList] = useState([
+        {
+            value: "Autor"
+        },
+        {
+            value: "Tytuł"
+        },
+        {
+            value: "Kategoria"
+        }
+    ]);
+
+    const [category, setCategory] = useState(categoryList[0].value);
+    const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
-        let fetchString = "";
         if(searchByString)
-            fetchString = 'http://localhost:8081/api/books/search?contain=' + title;
+            fetchAllBooks();
         else
-            fetchString = 'http://localhost:8081/api/books/categories/' + categoryFilter;
+            fetchBooksByCategory(categoryFilter);
+    },[]);
 
-        fetch(fetchString)
+    const fetchAllBooks = () => {
+        fetch('http://localhost:8081/api/books/search?contain='+title)
             .then(res =>{
                 return res.json();
             })
@@ -25,41 +37,107 @@ const BooksList = ({title, categoryFilter, booksList, setBooksList, createNotifi
                     setBooksList(data);
                 }
                 else{
-                    /*console.log("po ksiazce");
-                    const newBooksList = booksList.filter(book => book.title === title);
-                    setBooksList(newBooksList);*/
                     alert('nie ma ksiązki');
                 }
-
             })
+            .catch(error => {
+                console.log(error);
+            })
+    }
 
-    },[]);
+    const fetchBooksByCategory = (category) => {
+        fetch('http://localhost:8081/api/books/categories/' + category)
+        .then(res =>{
+            return res.json();
+        })
+        .then(data => {
+            setInputValue('');
+            setBooksList(data);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
 
+    const fetchBooksByTitle = (title) => {
+        fetch('http://localhost:8081/api/books/search?contain=' + title)
+        .then(res =>{
+            return res.json();
+        })
+        .then(data => {
+            setInputValue('');
+            setBooksList(data);
+        })
+    }
 
+    const fetchBooksByAuthor = (author) => {
+        fetch('http://localhost:8081/api/books/authors/' + author)
+        .then(res =>{
+            return res.json();
+        })
+        .then(data => {
+            setInputValue('');
+            setBooksList(data);
+        })
+    }
 
+    const fetchBooks = (e) => {
+        e.preventDefault();
+        console.log("input", inputValue);
+        console.log("kategoria", category);
+
+        if(inputValue === '') {
+            fetchAllBooks();
+            return;
+        }
+
+        switch(category) {
+            case 'Autor':
+                {
+                    fetchBooksByAuthor(inputValue);
+                    break;
+                }
+            case 'Tytuł':
+                {
+                    fetchBooksByTitle(inputValue);
+                    break;
+                }
+            case 'Kategoria':
+                {
+                    fetchBooksByCategory(inputValue);
+                    break;
+                }
+            default:
+                break;
+        }
+    }
 
     return (
-
         <div className="bookslist-container">
             <div className="bookslist-header">
                 <div className="searchbox-container">
 
                     <h1 className = "header-text">WYSZUKIWANIE ZAAWANSOWANE</h1>
                     <div className="search-panel">
-                        <input type="text" placeholder = "Podaj dane"/>
+                        <input type="text" placeholder = "Podaj dane" value={inputValue} onChange={e => setInputValue(e.target.value)}/>
                         <div className="select-container">
                             <select value = {category} onChange = {e => setCategory(e.target.value)}>
-                                <option value = "author">Autor</option>
-                                <option value = "title">Tytuł</option>
-                                <option value = "category">Kategoria</option>
+                                {
+                                    categoryList.map(c => {
+                                        return (
+                                            <option value={c.value}>{c.value}</option>
+                                        )
+                                    })
+                                }
                             </select>
                         </div>
                     </div>
+                    <button onClick={fetchBooks}>Wyszukaj</button>
                 </div>
             </div>
             {booksList && <BookTable booksList = {booksList} createNotification={createNotification}/>}
         </div>
-     );
+    );
 }
 
 export default BooksList;

@@ -1,32 +1,112 @@
 import { useState } from "react";
+import EditMember from "../components/EditMember";
+import AddMember from "../components/AddMember";
+import Modal from 'react-modal';
 import "../Styles/AdminPanel.css"
 
+Modal.setAppElement('#root');
 
+const modalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
 
-const AdminPanel = () => {
+const AdminPanel = ({createNotification}) => {
 
     const [displayUsersClicked, setDisplayUsersClicked] = useState(false);
     const [addUserClicked, setAddUserClicked] = useState(false);
 
-    //inputy
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-
     //lista użytkowników
     const [userList, setUserList] = useState(null);
+    const [newUser, setNewUser] = useState({
+      username: "",
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+    });
+    const [editedUser, setEditedUser] = useState(null);
+
+    const [modalIsOpen, setIsOpen] = useState(false);
+
+    function openEditModal(user) {
+      setIsOpen(true);
+      setEditedUser(user);
+    }
+
+    function afterOpenModal() {
+      // references are now sync'd and can be accessed.
+    }
+
+    function closeModal() {
+      setIsOpen(false);
+    }
+
+    const validateEmail = (email) => {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+    };
+
+    function validateUser(user){
+      let messages = [];
+
+      console.log(user)
+
+      if(user.username.length > 45) {
+        messages.push("Nazwa użytkownika nie może być dłuższa niż.");
+      } else {
+        if(user.username.length < 3) {
+          messages.push("Nazwa użytkownika nie może być krótsza niż.");
+        }
+      }
+
+      if(!validateEmail(user.email)){
+        messages.push("Nieprawidłowy adres email.");
+      }
+
+      if(user.password.length < 6){
+        messages.push("Hasło musi być dłuższe niż 6 znaków.");
+      }
+
+      if(user.firstName.length > 45){
+        messages.push("Imię nie może być dłuższe niż 45 znaków.");
+      }
+
+      if(user.lastName.length > 45){
+        messages.push("Nazwisko nie może być dłuższe niż 45 znaków.");
+      }
+
+      console.log(messages.length)
+      if(messages.length > 0){
+        let message = '';
+        messages.forEach(e => {
+          message += e;
+        })
+        createNotification("error", message);
+        console.log(message)
+        return false;
+      }
+
+      return true;
+    }
 
     //funkcja usuwajaca użytkownika
     const userRemove = (userID) => {
         fetch('http://localhost:8081/api/members/deleteById/'+ userID, {
             method: 'DELETE'
         }).then(() => {
-            alert('Usunięto użytkownika');
+            createNotification("success", "Usunięto użytkownika")
         })
     }
-
 
     //funkcja wyświetlająca wszystkich użytkowników
     const loadUsers = () => {
@@ -36,50 +116,60 @@ const AdminPanel = () => {
             return res.json();
         }).then(users => {
             setUserList(users);
-        })   
+        })
     }
 
-    //funkcja dodajaca uzytkownika 
-    const addUser = () => {
-        const member = {
-            email: email,
-            firstName: firstName,
-            lastName: lastName,
-            password: password,
-            username: username
+    //funkcja dodajaca uzytkownika
+    const addUser = (user) => {
+        console.log(user)
+        if(!validateUser(user)){
+          return;
         }
 
         fetch('http://localhost:8081/api/members', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(member)
+            body: JSON.stringify(user)
         }).then(() => {
-            alert('Dodano użytkownika');
+            createNotification("success", "Dodano użytkownika")
             window.location.reload(false);
         })
     }
-    
+
+    //funkcja edytująca uzytkownika
+    const editUser = (user) => {
+      if(user.password == '') {
+        user.password = editedUser.password;
+      }
+
+      if(!validateUser(user)){
+        return;
+      }
+
+      fetch('http://localhost:8081/api/members/' + editedUser.username, {
+          method: 'PUT',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user)
+      }).then(() => {
+          createNotification("success", "Edytowano użytkownika")
+          loadUsers();
+          closeModal();
+      })
+    }
+
      const checkClick = (event) => {
         if (event.target.matches('.display-users') || event.target.matches('.fa-users')){
             loadUsers();
             setDisplayUsersClicked(true);
-            
-
         }
         if (event.target.matches('.add-user') || event.target.matches('.fa-user-plus')){
-           setAddUserClicked(true);
+            setAddUserClicked(true);
         }
         if (event.target.matches('.header h1')){
             setDisplayUsersClicked(false);
             setAddUserClicked(false);
             window.location.reload(false);
-            
-        }
-        if (event.target.matches('td .fa-user-edit')){
-            //w momencie klikniecia edit powinnismy pobrac cale dane o uzytkowniku o danym id i przypisac ten obiekt do jakiejs zmiennej 
-            //nastepnie otwiera sie nam popup do edycji uzytkownika
-            //w momencie wprowadzenia nowych danych kazdy input podmieniamy z wartoscia z obiektu
-            //jak zapisujemy zmiany, wysylamy caly obiekt
+
         }
         if (event.target.matches('td .fa-user-times')){
 
@@ -90,13 +180,13 @@ const AdminPanel = () => {
             //usuwanie po userID
         }
 
-        if (event.target.matches('.add-user-panel .add-user-btn')){
-            addUser();
-        }
+        // if (event.target.matches('.add-user-panel .add-user-btn')){
+        //     addUser();
+        // }
     }
 
-    return ( 
-        <div className="adminpanel-container" onClick= {e => {
+    return (
+        <div className="adminpanel-container" id="adminpanel" onClick= {e => {
             checkClick(e);
         }}>
             <div className="header">
@@ -113,50 +203,11 @@ const AdminPanel = () => {
                 </div>
 
                 <div className="add-user-panel" style = {{display: addUserClicked === true ? "flex" : "none"}}>
-                    <div className="inputs">
-                        <h1 className="add-user-headertext">Dodaj <br/> Użytkownika</h1>
-                        <div className="element">
-                            <h1>Nazwa Użytkownika <span>*</span></h1>
-                            <input type="text" className ='username' onChange = {e => {
-                                setUsername(e.target.value)
-                            }}/>
-                        </div>
-
-                        <div className="element">
-                            <h1>E-mail <span>*</span></h1>
-                            <input type="email" className ='email' onChange = {e => {
-                                setEmail(e.target.value);
-                            }}/>
-                        </div>
-
-                        <div className="element">
-                            <h1>Hasło <span>*</span></h1>
-                            <input type="password" className ='password' onChange = {e => {
-                                setPassword(e.target.value);
-                            }}/>
-                        </div>
-
-                        <div className="element">
-                            <h1>Imię <span>*</span></h1>
-                            <input type="text" className ='name' onChange = {e => {
-                                setFirstName(e.target.value)
-                            }}/>
-                        </div>
-
-                        <div className="element">
-                            <h1>Nazwisko <span>*</span></h1>
-                            <input type="text" className ='lastname' onChange = {e => {
-                                setLastName(e.target.value)
-                            }}/>
-                        </div>
-                    </div>
-
-                    <div className="add-user-btn">
-                        <h1>DODAJ UŻYTKOWNIKA</h1>
-                    </div>
-
+                    <AddMember
+                        addMember={addUser}
+                        memberParam={newUser}
+                    />
                 </div>
-
                 <table className="users-table" style = {{display: displayUsersClicked === true ? "inline" : "display"}}>
                     <thead>
                         <tr>
@@ -175,18 +226,37 @@ const AdminPanel = () => {
                                 <td>{user.lastName}</td>
                                 <td>{user.username}</td>
                                 <td className = "tools">
-                                    <i className="fas fa-user-edit"></i>
-                                    <i className="fas fa-user-times"></i>
+                                    <i className="fas fa-user-edit" onClick = {e =>
+                                      {openEditModal(user)}}>
+                                    </i>
+                                    <i className="fas fa-user-times" ></i>
                                 </td>
                             </tr>
                         ))}
-                        
+
                     </tbody>
                 </table>
+
+                <Modal
+                  isOpen={modalIsOpen}
+                  onAfterOpen={afterOpenModal}
+                  onRequestClose={closeModal}
+                  style={modalStyles}
+                  contentLabel="Edit member"
+                >
+                  <i className="fas fa-window-close" onClick = {closeModal}>
+                  </i>
+                  <EditMember
+                    editMember={editUser}
+                    memberParam={editedUser}
+
+                  />
+
+                </Modal>
             </div>
             <div className="bottom"></div>
         </div>
-     );
+    );
 }
- 
+
 export default AdminPanel;

@@ -12,7 +12,7 @@ import "../Styles/EmployeePanel.css";
 import CreateCategory from "../components/CreateCategory";
 import CreateAuthor from "../components/CreateAuthor";
 
-const EmployeePanel = () => {
+const EmployeePanel = ({setIsLogged}) => {
 
     var userData = JSON.parse(localStorage.getItem("userData"));
 
@@ -209,7 +209,7 @@ const EmployeePanel = () => {
                         </div>
                     </div>
                 </div>
-                <Link to={'/logowanie'}  onClick = {() => {localStorage.clear();}}>
+                <Link to={'/logowanie'}  onClick = {() => {localStorage.clear(); setIsLogged(false);}}>
                     <div className="logout-btn">
                         <h1>WYLOGUJ SIĘ</h1>
                     </div>

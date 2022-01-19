@@ -26,15 +26,13 @@ const Registration = () => {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(member),     
-        }).then(() => { 
+        }).then(() => {
+            setRedirect(true);
         })
     }
 
     const checkClick = (event) => {
-        if(event.target.matches = '.registration-panel .register-btn')
-        {
-            register();
-        }
+        register();
     }
 
     if (redirect) {
@@ -42,9 +40,7 @@ const Registration = () => {
     }
     return ( 
         <div className="registration-container">
-            <div className="registration-panel" onClick = {e => {
-                checkClick(e);
-            }}>
+            <div className="registration-panel">
                 <h1 className = "registration-header">REJESTRACJA</h1>
                 <div className="registration-data">
                     <input
@@ -107,7 +103,9 @@ const Registration = () => {
                 </div>
 
                 <div className="register-btn">
-                    <button>ZAREJESTRUJ SIĘ</button>
+                    <button onClick = {e => {
+                checkClick(e);
+            }}>ZAREJESTRUJ SIĘ</button>
                 </div>
 
             </div>

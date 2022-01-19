@@ -7,12 +7,10 @@ const BookTable = ({booksList, createNotification}) => {
     var userData = JSON.parse(localStorage.getItem("userData"));
 
     const showLoanConfirm = (bookId) => {
-
-      let bookTitle = booksList.filter((b) => b.id === bookId)[0].title;
-
+      let book = booksList.find(element => element.id == bookId);
       confirmAlert({
         title: 'Rezerwacja',
-        message: 'Czy na pewno chcesz wypożyczyć: ' + bookTitle + '?.',
+        message: 'Czy na pewno chcesz wypożyczyć: ' + book.title + '?.',
         buttons: [
           {
             label: 'Tak',
@@ -28,9 +26,7 @@ const BookTable = ({booksList, createNotification}) => {
     }
 
     function loan(bookId) {
-
-      let bookTitle = booksList.filter((b) => b.id === bookId)[0].title;
-
+      let book = booksList.find(element => element.id == bookId);
       fetch('http://localhost:8081/api/loans/members/'+ userData.id +'/books/' + bookId, {
           method: 'POST',
           headers: {
@@ -39,10 +35,10 @@ const BookTable = ({booksList, createNotification}) => {
           }
       }).then(res => {
         console.log(res.json())
-        if(res.status == 400) {
-          createNotification('error', "Próba wypożyczenia: " + bookTitle + " nieudana.");
+        if(res.status === 400) {
+          createNotification('error', "Próba wypożyczenia: " + book.title + " nieudana.");
         } else {
-          createNotification('success', "Zarezerwowano: " + bookTitle);
+          createNotification('success', "Zarezerwowano: " + book.title);
         }
       })
     }
@@ -59,7 +55,7 @@ const BookTable = ({booksList, createNotification}) => {
                         <th>TYTUŁ</th>
                         <th>AUTOR</th>
                         <th>KATEGORIA</th>
-                        { location.pathname == "/listaksiążek" &&
+                        { location.pathname === "/listaksiążek" &&
                             <th>AKCJE</th>
                         }
 
@@ -73,28 +69,31 @@ const BookTable = ({booksList, createNotification}) => {
                             <td>{book.isbn}</td>
                             <td>{book.title}</td>
                             <td>
-                                {
-                                book.authors.map(author => {
-                                return (author.firstName + ' ' + author.lastName + ',  ')})
-                                }
+                              {
+                                book.authors.map((author, index) => {
+                                  return (index !== book.authors.length - 1 ? author.firstName + ' ' + author.lastName + ',  ' : author.firstName + ' ' + author.lastName)
+                                })
+                              }
                             </td>
 
                             <td >
-                              {     book.categories.map(category => {
-                                    return (category.categoryName) + ', ';
-                                    })}
+                            {
+                                book.categories.map((category, index) => {
+                                  return (index !== book.categories.length - 1 ? category.categoryName + ',  ' : category.categoryName)
+                                })
+                            }
                             </td>
-                            <td>
-                            { location.pathname == "/listaksiążek" &&
-                              // <div className = "td-loan-btn" >
+
+                            { location.pathname === "/listaksiążek" &&
+                              <td>
                                   <button  className = "loan-btn" key = {book.id} onClick = {() => {showLoanConfirm(book.id)}}
-                                    style = {{display: localStorage.getItem("userRole") === "User" ? "flex" : "none", padding: "10px", fontSize: "16px", backgroundColor: "#57923b", color: "white"}}
+                                    style = {{display: localStorage.getItem("userRole") === "User" ? "flex" : "none"}}
                                   >
                                     Wypożycz
                                   </button>
-                              // </div>
+                              </td>
                             }
-                            </td>
+
                         </tr>
                     ))}
                 </tbody>

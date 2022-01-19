@@ -4,7 +4,7 @@ import FinesTable from "../components/FinesTable";
 import LoansTable from "../components/LoansTable";
 import "../Styles/Account.css"
 
-const Account = () => {
+const Account = ({setIsLogged}) => {
 
     var userData = JSON.parse(localStorage.getItem("userData"));
 
@@ -16,7 +16,7 @@ const Account = () => {
 
     //funkcja wczytująca aktywne wypozyczenia uzytkownika
     const fetchLoans = async () => {
-        const res = await fetch('http://localhost:8081/api/loans/members/' + userData.id + '/active', {
+        const res = await fetch('http://localhost:8081/api/loans/members/' + userData.id, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -53,7 +53,7 @@ const Account = () => {
             setMemberFines(fines);
         };
         getFines();
-    }, [memberFines]);
+    }, []);
 
 
     const loanClick = (e) => {
@@ -95,7 +95,7 @@ const Account = () => {
 
                     </div>
                 </div>
-                <Link to={'/logowanie'}  onClick = {() => {localStorage.clear();}}>
+                <Link to={'/logowanie'}  onClick = {() => {localStorage.clear(); setIsLogged(false);}}>
                     <div className="logout-btn">
                         <h1>WYLOGUJ SIĘ</h1>
                     </div>
