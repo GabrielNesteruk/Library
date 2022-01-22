@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "../Styles/LoginPage.css";
 import jwt_decode from "jwt-decode";
 
-const LoginPage = ({isLogged, setIsLogged, createNotification}) => {
+const LoginPage = ({ isLogged, setIsLogged, createNotification }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
@@ -12,12 +12,11 @@ const LoginPage = ({isLogged, setIsLogged, createNotification}) => {
   let loginError = false;
 
   const handleSumbit = () => {
-
-    if(username === "" || password === "") {
+    if (username === "" || password === "") {
       createNotification("error", "Niepoprawne dane logowania");
       return;
     }
-    
+
     const data = {
       username: username,
       password: password,
@@ -30,13 +29,13 @@ const LoginPage = ({isLogged, setIsLogged, createNotification}) => {
       body: JSON.stringify(data),
     })
       .then((res) => {
-        if(res.status !== 200) {
+        if (res.status !== 200) {
           loginError = true;
         }
         return res.json();
       })
       .then((data) => {
-        if(loginError) {
+        if (loginError) {
           return;
         }
 
@@ -47,16 +46,33 @@ const LoginPage = ({isLogged, setIsLogged, createNotification}) => {
         localStorage.setItem("userToken", userToken); // nazwa uzytkownika w locale storage
         localStorage.setItem("token", token); //token w local storage
         localStorage.setItem("userRole", userRole); //rola tokena w local storage
+
+        fetch(
+          "http://localhost:8081/api/members/username/" +
+            localStorage.getItem("userToken"),
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+          .then((res) => {
+            return res.json();
+          })
+          .then((user) => {
+            localStorage.setItem("userID", user.id);
+            localStorage.setItem("userData", JSON.stringify(user));
+          });
       })
       .then(() => {
-        if(!loginError) {
+        if (!loginError) {
           setIsLogged(false);
           setIsLogged(true);
           setRedirect(true);
           console.log("loguje");
-        }
-        else {
-          createNotification("error", "Niepoprawne dane logowania")
+        } else {
+          createNotification("error", "Niepoprawne dane logowania");
           setRedirect(false);
           setIsLogged(false);
         }
@@ -67,12 +83,13 @@ const LoginPage = ({isLogged, setIsLogged, createNotification}) => {
     return <Redirect to="/" />;
   }
 
-
   return (
     <div className="loginpage-container">
       <div className="createaccount-label-container">
         <h1>Nie posiadasz konta?</h1>
-        <Link to={'/rejestracja'}><button>UTWÓRZ KONTO</button></Link>
+        <Link to={"/rejestracja"}>
+          <button>UTWÓRZ KONTO</button>
+        </Link>
       </div>
 
       <div className="login-panel-container">

@@ -27,28 +27,35 @@ function App() {
   //przechowuje dane o uzytkowniku
   const [userData, setUserData] = useState(null);
 
+  // useEffect(() => {
+  //   if (isLogged === true) {
+  //     fetch(
+  //       "http://localhost:8081/api/members/username/" +
+  //         localStorage.getItem("userToken"),
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + localStorage.getItem("token"),
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     )
+  //       .then((res) => {
+  //         return res.json();
+  //       })
+  //       .then((user) => {
+  //         localStorage.setItem("userID", user.id);
+  //         localStorage.setItem("userData", JSON.stringify(user));
+  //         console.log("pobieram");
+  //       });
+  //   }
+  // }, [isLogged]);
+
   useEffect(() => {
-    if (isLogged === true) {
-      fetch(
-        "http://localhost:8081/api/members/username/" +
-          localStorage.getItem("userToken"),
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((res) => {
-          return res.json();
-        })
-        .then((user) => {
-          localStorage.setItem("userID", user.id);
-          localStorage.setItem("userData", JSON.stringify(user));
-          console.log("pobieram");
-        });
+    if (localStorage.getItem("userToken") !== null) {
+      setIsLogged(true);
+      console.log("AKTUALIZUJE LOGOWANIE");
     }
-  }, [isLogged]);
+  }, []);
 
   const createNotification = (type, message) => {
     switch (type) {
@@ -110,17 +117,25 @@ function App() {
           <Registration />
         </Route>
         <Route exact path="/pracownikpanel">
-          <EmployeePanel setIsLogged={setIsLogged} />
+          {isLogged ? (
+            <EmployeePanel setIsLogged={setIsLogged} />
+          ) : (
+            <h2>Niezalogowano</h2>
+          )}
         </Route>
         <Route exact path="/adminpanel">
           {isLogged ? (
             <AdminPanel createNotification={createNotification} />
           ) : (
-            <h1>Niezalogowany</h1>
+            <h2>Niezalogowano</h2>
           )}
         </Route>
         <Route exact path="/konto">
-          <Account setIsLogged={setIsLogged} />
+          {isLogged ? (
+            <Account setIsLogged={setIsLogged} />
+          ) : (
+            <h2>Niezalogowano</h2>
+          )}
         </Route>
       </Router>
     </div>
